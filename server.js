@@ -4,26 +4,48 @@ import path from "path";
 import { createApp } from "h3";
 import { createServer as createViteServer } from "vite";
 import { listen } from "listhen";
+import sirv from "sirv";
+
+const DEV_ENV = "development";
 
 const bootstrap = async () => {
   const app = createApp();
+  let vite;
 
-  const vite = await createViteServer({
-    server: { middlewareMode: true },
-    appType: "custom",
-  });
+  if (process.env.NODE_ENV === DEV_ENV) {
+    vite = await createViteServer({
+      server: { middlewareMode: true },
+      appType: "custom",
+    });
 
-  app.use(vite.middlewares);
+    app.use(vite.middlewares);
+  } else {
+    app.use(
+      "/",
+      sirv("dist/client", {
+        gzip: true,
+      })
+    );
+  }
 
   app.use("*", async (req, res, next) => {
     const url = req.originalUrl;
+    let template, render;
 
     try {
-      let template = fs.readFileSync(path.resolve("./index.html"), "utf-8");
+      if (process.env.NODE_ENV === DEV_ENV) {
+        template = fs.readFileSync(path.resolve("./index.html"), "utf-8");
 
-      template = await vite.transformIndexHtml(url, template);
+        template = await vite.transformIndexHtml(url, template);
 
-      const { render } = await vite.ssrLoadModule("/src/entry-server.tsx");
+        render = (await vite.ssrLoadModule("/src/entry-server.tsx")).render;
+      } else {
+        template = fs.readFileSync(
+          path.resolve("dist/client/index.html"),
+          "utf-8"
+        );
+        render = (await import("./dist/server/entry-server.js")).render;
+      }
 
       const appHtml = await render({ path: url });
 
