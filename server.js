@@ -20,9 +20,7 @@ const bootstrap = async () => {
 
     app.use(vite.middlewares);
   } else {
-    app.use(
-      "/",
-      sirv("dist/client", {
+    app.use(sirv("dist/client", {
         gzip: true,
       })
     );
