@@ -1,4 +1,4 @@
-import fs from 'fs'
+import fs from 'fs/promises'
 import path from 'path'
 
 import { createApp, fromNodeMiddleware, toNodeListener } from 'h3'
@@ -35,13 +35,13 @@ const bootstrap = async () => {
 
       try {
         if (process.env.NODE_ENV === DEV_ENV) {
-          template = fs.readFileSync(path.resolve('./index.html'), 'utf-8')
+          template = await fs.readFile(path.resolve('./index.html'), 'utf-8')
 
           template = await vite.transformIndexHtml(url, template)
 
           render = (await vite.ssrLoadModule('/src/entry-server.tsx')).render
         } else {
-          template = fs.readFileSync(
+          template = await fs.readFile(
             path.resolve('dist/client/index.html'),
             'utf-8'
           )
