@@ -5,24 +5,37 @@
   "type": "module",
   "scripts": {
     "dev": "NODE_ENV=development node server",
-    "build": "npm run build:client && npm run build:server",
+    "build": "rm -rf dist && npm run build:client && npm run build:server",
     "build:client": "vite build --outDir dist/client",
     "build:server": "vite build --ssr src/entry-server.tsx --outDir dist/server",
-    "serve": "NODE_ENV=production node server"
+    "serve": "NODE_ENV=production node server",
+    "lint": "eslint --ext .ts src",
+    "lint:fix": "eslint --ext .tsx src --fix"
   },
   "dependencies": {
-    "h3": "^0.7.12",
-    "listhen": "^0.2.13",
+    "h3": "^0.8.6",
+    "listhen": "^0.3.5",
+    "million": "^1.12.6-beta.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.3.0",
+    "react-router-dom": "^6.4.3",
     "sirv": "^2.0.2"
   },
   "devDependencies": {
-    "@types/react": "^18.0.15",
-    "@types/react-dom": "^18.0.6",
-    "@vitejs/plugin-react": "^2.0.0",
-    "typescript": "^4.6.4",
-    "vite": "^3.0.0"
+    "@nabla/vite-plugin-eslint": "^1.4.1",
+    "@types/react": "^18.0.24",
+    "@types/react-dom": "^18.0.8",
+    "@typescript-eslint/eslint-plugin": "^5.42.0",
+    "@typescript-eslint/parser": "^5.42.0",
+    "@vitejs/plugin-react": "^2.2.0",
+    "eslint": "^8.26.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.4.0",
+    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-react": "^7.31.10",
+    "typescript": "^4.8.4",
+    "vite": "^3.2.2",
+    "vite-plugin-swc-react-refresh": "^2.2.1"
   }
 }
